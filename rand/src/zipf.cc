@@ -1,5 +1,6 @@
 #include <zipf.hh>
 #include <cmath>
+#include <cstdlib>
 
 namespace cse498 {
 
@@ -26,7 +27,7 @@ namespace cse498 {
         int rand_zipf(long n, double zetaN, double theta) {
             double alpha = 1 / (1 - theta);
             double eta = (1 - pow(2.0 / n, 1 - theta)) / (1 - zeta(theta, 2) / zetaN);
-            double u = rand() / (double) RAND_MAX;
+            double u = std::rand() / (double) RAND_MAX;
             double uz = u * zetaN;
             if (uz < 1) return 1;
             if (uz < 1 + pow(0.5, theta)) return 2;
