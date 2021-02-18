@@ -8,3 +8,4 @@ target_include_directories(rand PUBLIC include)
 
 add_executable(zipf_test test/zipf_test.cc)
 target_link_libraries(zipf_test PRIVATE rand)
+add_test(zipf_test zipf_test)
