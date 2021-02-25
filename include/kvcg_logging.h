@@ -1,6 +1,6 @@
 /****************************************************
  *
- * Fault Tolerance Implementation
+ * Logging Implementation
  *
  ****************************************************/
 
@@ -9,20 +9,32 @@
 
 #include <iostream>
 
-
+/* Available log levels */
 enum LogLevel { ERROR, WARNING, INFO,
                 DEBUG, DEBUG2, DEBUG3, DEBUG4 };
+
+/* Define current loging level */
 extern int LOG_LEVEL;
 
 /**
  *
  * LOGGING CLASS
  *
- * TODO: Log to file as well.
+ * Meant to be used in place of cout/cerr.
+ * To use, set LOG_LEVEL to desired level.
+ * It can be changed at runtime as well.
+ * a message will only be displayed if
+ * LOG_LEVEL is set above it.
+ * To invoke, use just as cout/cerr -
  *
- * TBD: Ever use stdout? Use stderr for unbuffered
+ * LOG(INFO) << "x is " << x;
+ *
+ * Note: No endl needed, added automatically.
  *
  * No promises on thread safety...
+ *
+ * TBD: Log to file as well?
+ * TBD: Ever use stdout? Use stderr for unbuffered
  *
  */
 class LOG {
