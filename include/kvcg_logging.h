@@ -8,6 +8,7 @@
 #define KVCG_LOGGING_H
 
 #include <iostream>
+#include <sstream>
 
 /* Available log levels */
 enum LogLevel { ERROR, WARNING, INFO,
@@ -31,8 +32,6 @@ extern int LOG_LEVEL;
  *
  * Note: No endl needed, added automatically.
  *
- * No promises on thread safety...
- *
  * TBD: Log to file as well?
  * TBD: Ever use stdout? Use stderr for unbuffered
  *
@@ -47,14 +46,17 @@ public:
     operator << ("["+getLabel(l)+"]:");
   }
   ~LOG() {
-    if (opened) std::cerr << std::endl;
+    if (opened) {
+        msg << std::endl;
+        std::cerr << msg.str();
+    }
     opened = false;
   }
 
   template<class T>
-  LOG &operator<<(const T &msg) {
+  LOG &operator<<(const T &m) {
     if (msgLevel <= LOG_LEVEL) {
-        std::cerr << msg;
+        msg << m;
         opened = true;
     }
     return *this;
@@ -62,6 +64,7 @@ public:
 private:
   bool opened;
   LogLevel msgLevel;
+  std::stringstream msg;
 
   inline std::string getLabel(LogLevel l) {
     switch(l) {
