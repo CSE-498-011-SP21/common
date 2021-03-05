@@ -17,6 +17,7 @@ enum errNum {
 
 KVCG_ESUCCESS = 0,
 KVCG_EUNKNOWN = 1,
+KVCG_EBADCONFIG = 10,
 
 };
 
@@ -33,7 +34,8 @@ KVCG_EUNKNOWN = 1,
 inline const char *kvcg_strerror(errNum errnum) {
     switch (errnum) {
         case KVCG_ESUCCESS: return "Success";
-        case KVCG_EUNKNOWN: return "Unknown";
+        case KVCG_EUNKNOWN: return "Unknown error";
+        case KVCG_EBADCONFIG: return "Config file error";
     }
 
     return "Undefined error";
