@@ -13,7 +13,7 @@
  * Definition of KVCG Errors
  *
  */
-enum errNum {
+enum errNum: int {
 
 KVCG_ESUCCESS = 0,
 KVCG_EUNKNOWN = 1,
@@ -31,7 +31,7 @@ KVCG_EBADCONFIG = 10,
  * @return description of error
  *
  */
-inline const char *kvcg_strerror(errNum errnum) {
+inline const char *kvcg_strerror(int errnum) {
     switch (errnum) {
         case KVCG_ESUCCESS: return "Success";
         case KVCG_EUNKNOWN: return "Unknown error";
