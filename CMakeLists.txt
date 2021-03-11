@@ -7,3 +7,5 @@ enable_testing()
 add_subdirectory(rand)
 
 add_subdirectory(threadpool)
+
+add_subdirectory(kvcg_stuff)

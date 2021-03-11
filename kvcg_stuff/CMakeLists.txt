@@ -1,0 +1,5 @@
+add_library(kvcg_stuff INTERFACE)
+target_include_directories(kvcg_stuff INTERFACE include)
+
+add_executable(kvcg_logging_test test/kvcg_logging_test.cc)
+target_link_libraries(kvcg_logging_test PRIVATE kvcg_stuff)
