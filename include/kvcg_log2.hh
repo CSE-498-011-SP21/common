@@ -2,10 +2,27 @@
 // Created by depaulsmiller on 3/11/21.
 //
 
-#include "kvcg_logging.h"
+#include <type_traits>
+#include <iostream>
+#include <sstream>
 
 #ifndef COMMON_KVCG_LOG2_HH
 #define COMMON_KVCG_LOG2_HH
+
+/* Available log levels */
+enum LogLevel {
+    ERROR = 0,
+    WARNING = 1,
+    INFO = 2,
+    DEBUG = 3,
+    DEBUG2 = 4,
+    DEBUG3 = 5,
+    DEBUG4 = 6,
+    TRACE = 7
+};
+
+/* Define current loging level */
+extern int LOG_LEVEL;
 
 /**
  * Set compile time log level to disable compilation of logs
@@ -16,6 +33,25 @@ inline const int COMPILE_LOG_LEVEL = COMPILE_LOG;
 inline const int COMPILE_LOG_LEVEL = TRACE;
 #endif
 
+/**
+ *
+ * LOGGING CLASS
+ *
+ * Meant to be used in place of cout/cerr.
+ * To use, set LOG_LEVEL to desired level.
+ * It can be changed at runtime as well.
+ * a message will only be displayed if
+ * LOG_LEVEL is set above it.
+ * To invoke, use just as cout/cerr -
+ *
+ * LOG(INFO) << "x is " << x;
+ *
+ * Note: No endl needed, added automatically.
+ *
+ * TBD: Log to file as well?
+ * TBD: Ever use stdout? Use stderr for unbuffered
+ *
+ */
 template<LogLevel LEVEL>
 class LOG2 {
 public:
@@ -92,6 +128,7 @@ private:
 
 };
 
-#define DO_LOG(L) LOG2<L>() << __func__ <<"(): " << __FILE__ << ":" << __LINE__ << " "
+#define DO_LOG(L) LOG(L)
+#define LOG(L) LOG2<L>() << __func__ <<"(): " << __FILE__ << ":" << __LINE__ << " "
 
 #endif //COMMON_KVCG_LOG2_HH
