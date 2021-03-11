@@ -6,8 +6,6 @@
 
 int LOG_LEVEL = TRACE;
 
-const int COMPILE_LOG_LEVEL = DEBUG2;
-
 int main() {
 
     LOG(ERROR) << "Error";

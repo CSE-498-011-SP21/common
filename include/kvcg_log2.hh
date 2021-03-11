@@ -10,7 +10,11 @@
 /**
  * Set compile time log level to disable compilation of logs
  */
-extern const int COMPILE_LOG_LEVEL;
+#ifdef COMPILE_LOG
+inline const int COMPILE_LOG_LEVEL = COMPILE_LOG;
+#else
+inline const int COMPILE_LOG_LEVEL = TRACE;
+#endif
 
 template<LogLevel LEVEL>
 class LOG2 {
