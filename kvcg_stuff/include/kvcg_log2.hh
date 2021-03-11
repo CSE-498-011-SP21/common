@@ -128,7 +128,7 @@ private:
 
 };
 
-#define DO_LOG(L) LOG(L)
-#define LOG(L) LOG2<L>() << __func__ <<"(): " << __FILE__ << ":" << __LINE__ << " "
+#define LOG(L) LOG2<L>() << __func__ <<"(): "
+#define DO_LOG(L) LOG2<L>() << __func__ <<"(): " << __FILE__ << ":" << __LINE__ << " "
 
 #endif //COMMON_KVCG_LOG2_HH
