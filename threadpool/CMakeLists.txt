@@ -10,4 +10,4 @@ target_include_directories(threadpool INTERFACE include)
 add_executable(threadpool_test test/threadpool_test.cc)
 target_link_libraries(threadpool_test PRIVATE threadpool)
 
-add_test(threadpool_test threadpool_test)
+#add_test(threadpool_test threadpool_test)
