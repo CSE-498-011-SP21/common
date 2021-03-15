@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 
-project(Common VERSION 0.0.2)
+project(Common VERSION 0.0.3)
 
 enable_testing()
 
