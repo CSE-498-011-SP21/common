@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 
-project(Common VERSION 0.0.1)
+project(Common VERSION 0.0.2)
 
 enable_testing()
 
@@ -21,6 +21,25 @@ install(TARGETS kvcg_stuff
 install(EXPORT CommonTargets
         FILE CommonTargets.cmake
         NAMESPACE Common::
+        DESTINATION lib/cmake/Common
+        )
+
+include(CMakePackageConfigHelpers)
+
+configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Config.cmake.in
+        "${CMAKE_CURRENT_BINARY_DIR}/CommonConfig.cmake"
+        INSTALL_DESTINATION lib/cmake/Common
+        )
+
+write_basic_package_version_file(
+        "${CMAKE_CURRENT_BINARY_DIR}/CommonConfigVersion.cmake"
+        VERSION "${CMAKE_PROJECT_VERSION}"
+        COMPATIBILITY AnyNewerVersion
+)
+
+install(FILES
+        "${CMAKE_CURRENT_BINARY_DIR}/CommonConfig.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/CommonConfigVersion.cmake"
         DESTINATION lib/cmake/Common
         )
 
