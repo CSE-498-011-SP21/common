@@ -5,6 +5,7 @@
 #include <vector>
 #include <cstring>
 #include <cassert>
+#include <SerDes.hh>
 
 #ifndef KVCG_DATA_T_HH
 #define KVCG_DATA_T_HH
@@ -35,7 +36,8 @@ struct data_t {
 
 };
 
-inline std::vector<char> serialize(data_t *data) {
+template<>
+inline std::vector<char> serialize<data_t*>(data_t *data) {
     size_t numBytes = (data == nullptr ? sizeof(size_t) : sizeof(size_t) + data->size);
     std::vector<char> bytes(numBytes);
     if (data) {
@@ -48,9 +50,10 @@ inline std::vector<char> serialize(data_t *data) {
     return bytes;
 }
 
-inline data_t *deserialize_data(const std::vector<char> &bytes) {
+template<>
+inline data_t *deserialize<data_t*>(const std::vector<char> &bytes) {
     size_t numBytes = *(size_t*)bytes.data();
-    assert(bytes.size() == numBytes + sizeof(size_t));
+    assert(bytes.size() >= numBytes + sizeof(size_t));
     if(numBytes == 0){
         return nullptr;
     } else {
@@ -59,5 +62,7 @@ inline data_t *deserialize_data(const std::vector<char> &bytes) {
         return data;
     }
 }
+
+
 
 #endif //KVCG_DATA_T_HH

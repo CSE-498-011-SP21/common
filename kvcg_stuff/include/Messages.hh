@@ -25,23 +25,24 @@ struct Response {
     data_t *result;
 };
 
-inline std::vector<char> serialize(const Response& r) {
+template<>
+inline std::vector<char> serialize<Response>(Response r) {
     std::vector<char> bytes(sizeof(int) + sizeof(bool));
     memcpy(bytes.data(), (const char *) &r.requestID, sizeof(int));
-    memcpy((bytes.data() + sizeof(int)), (const char*)&r.retry, sizeof(bool));
+    memcpy((bytes.data() + sizeof(int)), (const char *) &r.retry, sizeof(bool));
     std::vector<char> b2 = serialize(r.result);
     bytes.insert(bytes.end(), b2.begin(), b2.end());
     return bytes;
 }
 
-inline Response deserialize_response(const std::vector<char> &bytes) {
+template<>
+inline Response deserialize<Response>(const std::vector<char> &bytes) {
     Response r;
-    r.requestID = *(int*)bytes.data();
-    r.retry = *(bool*)(bytes.data() + sizeof(int));
+    r.requestID = *(int *) bytes.data();
+    r.retry = *(bool *) (bytes.data() + sizeof(int));
     std::vector<char> b2(bytes.begin() + sizeof(int) + sizeof(bool), bytes.end());
-    r.result = deserialize_data(b2);
+    r.result = deserialize<data_t *>(b2);
     return r;
 }
-
 
 #endif //KVCG_MESSAGES_HH

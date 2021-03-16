@@ -3,6 +3,7 @@
 //
 
 #include <Messages.hh>
+#include <RequestWrapper.hh>
 #include <iostream>
 
 int main(){
@@ -14,7 +15,7 @@ int main(){
 
     auto b = serialize(d);
 
-    auto d2 = deserialize_data(b);
+    auto d2 = deserialize<data_t*>(b);
 
     std::cerr << d->data << std::endl;
     std::cerr << d2->data << std::endl;
@@ -29,7 +30,7 @@ int main(){
 
     auto sr = serialize(r);
 
-    auto r2 = deserialize_response(sr);
+    auto r2 = deserialize<Response>(sr);
 
     if(r.retry != r2.retry)
         return 2;
@@ -39,6 +40,26 @@ int main(){
 
     if(strcmp(r.result->data, r2.result->data) != 0)
         return 4;
+
+    RequestWrapper<unsigned long long, data_t*> w;
+    w.requestInteger = 10;
+    w.value = d;
+    w.key = 11;
+
+    auto sw = serialize(w);
+
+    auto w2 = deserialize<RequestWrapper<unsigned long long, data_t*>>(sw);
+
+    if(w.requestInteger != w2.requestInteger) {
+        std::cerr << w.requestInteger << " != " << w2.requestInteger << std::endl;
+        return 5;
+    }
+
+    if(strcmp(w.value->data, w2.value->data) != 0)
+        return 6;
+
+    if(w.key != w2.key)
+        return 7;
 
     return 0;
 }
