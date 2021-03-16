@@ -7,4 +7,7 @@ add_executable(kvcg_logging_test test/kvcg_logging_test.cc)
 target_link_libraries(kvcg_logging_test PRIVATE kvcg_stuff)
 target_compile_definitions(kvcg_logging_test PRIVATE COMPILE_LOG=DEBUG)
 
+add_executable(serializationTest test/serializationTest.cc)
+target_link_libraries(serializationTest PRIVATE kvcg_stuff)
+
 install(DIRECTORY include/ DESTINATION include)

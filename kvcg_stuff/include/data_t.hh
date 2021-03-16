@@ -2,6 +2,10 @@
  * @file
  */
 
+#include <vector>
+#include <cstring>
+#include <cassert>
+
 #ifndef KVCG_DATA_T_HH
 #define KVCG_DATA_T_HH
 
@@ -30,5 +34,30 @@ struct data_t {
     }
 
 };
+
+inline std::vector<char> serialize(data_t *data) {
+    size_t numBytes = (data == nullptr ? sizeof(size_t) : sizeof(size_t) + data->size);
+    std::vector<char> bytes(numBytes);
+    if (data) {
+        memcpy(bytes.data(), (const char *) &data->size, sizeof(size_t));
+        memcpy((bytes.data() + sizeof(size_t)), data->data, data->size);
+    } else {
+        size_t tmp = 0;
+        memcpy(bytes.data(), (const char *) &tmp, sizeof(size_t));
+    }
+    return bytes;
+}
+
+inline data_t *deserialize_data(const std::vector<char> &bytes) {
+    size_t numBytes = *(size_t*)bytes.data();
+    assert(bytes.size() == numBytes + sizeof(size_t));
+    if(numBytes == 0){
+        return nullptr;
+    } else {
+        data_t* data = new data_t(numBytes);
+        memcpy(data->data, (bytes.data() + sizeof(size_t)), numBytes);
+        return data;
+    }
+}
 
 #endif //KVCG_DATA_T_HH
