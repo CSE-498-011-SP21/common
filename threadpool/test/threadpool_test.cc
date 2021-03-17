@@ -6,15 +6,15 @@
 #include <cassert>
 #include <iostream>
 
-int main(){
+int main() {
     std::atomic<int> sum;
     sum = 0;
-    cse498::threadpool<int> t([&sum](int i){
-        sum += i;
-    }, 4);
+    cse498::threadpool t(4);
 
-    for(int i = 0; i < 100; i++){
-        t.enqueue(1);
+    for (int i = 0; i < 100; i++) {
+        t.submit([&sum]() {
+            sum += 1;
+        });
     }
     t.join();
     std::cerr << sum << std::endl;

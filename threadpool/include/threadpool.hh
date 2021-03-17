@@ -4,104 +4,57 @@
 
 #include <queue>
 #include <functional>
-#include <condition_variable>
-#include <mutex>
+#include <tbb/concurrent_queue.h>
 #include <thread>
 #include <vector>
 #include <atomic>
 #include <iostream>
+#include <memory>
 
 #ifndef COMMON_THREADPOOL_HH
 #define COMMON_THREADPOOL_HH
 
 namespace cse498 {
-    template<typename Arg_t>
+
     class threadpool {
     public:
 
         /**
          * Function type
          */
-        using fn_t = std::function<void(Arg_t)>;
+        using fn_t = std::function<void()>;
 
         /**
          * Create threadpool
          * @param f function
          * @param threads number of threads
          */
-        threadpool(fn_t f, int threads) : fn(f), done(false) {
-            for(int i = 0; i < threads; i++){
-                pool.push_back(std::thread([this](){
-                    this->run();
-                }));
-            }
-        }
+        explicit threadpool(int threads);
 
-        ~threadpool() = default;
+        threadpool(const threadpool &) = delete;
+
+        threadpool(threadpool &&) = delete;
+
+        ~threadpool();
 
         /**
-         * Enqueue request to threadpool
-         * @param a request
+         * Submit request to threadpool
+         * @param fn request
          */
-        void enqueue(Arg_t a){
-            std::unique_lock<mtx_t> ul(mtx);
-            q.push(a);
-            cv.notify_one();
-        }
+        void submit(const fn_t &fn);
 
         /**
-         * Use to join threadpool
+         * Waits for the queue to be empty and then joins
          */
-        void join(){
-            done = true;
-            cv.notify_all();
-            for(auto& t : pool){
-                if(t.joinable())
-                    t.join();
-            }
-        }
+        void join();
 
     private:
+        using q_t = tbb::concurrent_queue<fn_t>;
 
-        using mtx_t = std::mutex;
-
-        /**
-         * What to run on each thread in the pool
-         */
-        void run(){
-            while(!done) {
-                Arg_t arg;
-                std::unique_lock<mtx_t> ul(mtx);
-                if (q.empty()) {
-                    cv.wait(ul); // will wake when not empty or done = true
-                }
-                if(!q.empty()) {
-                    arg = q.front();
-                    q.pop();
-                } else { // done = true
-                    return;
-                }
-                ul.unlock();
-                fn(arg);
-            }
-            while(true) {
-                Arg_t arg;
-                std::unique_lock<mtx_t> ul(mtx);
-                if (q.empty()) {
-                    return;
-                }
-                arg = q.front();
-                q.pop();
-                ul.unlock();
-                fn(arg);
-            }
-        }
+        void run();
 
         std::vector<std::thread> pool;
-        fn_t fn;
-        std::queue<Arg_t> q;
-        std::condition_variable cv;
-        mtx_t mtx;
+        q_t q;
         std::atomic<bool> done;
     };
 }
