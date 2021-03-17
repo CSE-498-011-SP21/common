@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.0)
 
 project(Common VERSION 0.1.0)
 
+set(CMAKE_CXX_STANDARD 17)
+
 enable_testing()
 
 add_subdirectory(rand)
@@ -10,12 +12,12 @@ add_subdirectory(threadpool)
 
 add_subdirectory(kvcg_stuff)
 
-install(TARGETS kvcg_stuff
+install(TARGETS kvcg_stuff threadpool rand rand_static
         EXPORT CommonTargets
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib
         RUNTIME DESTINATION bin
-        INCLUDES DESTINATION kvcg_stuff/include
+        INCLUDES DESTINATION include
         )
 
 install(EXPORT CommonTargets
