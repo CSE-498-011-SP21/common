@@ -4,7 +4,7 @@
 
 #include <kvcg_log2.hh>
 
-int LOG_LEVEL = TRACE;
+int LOG_LEVEL = INFO;
 
 int main() {
 

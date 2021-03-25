@@ -128,7 +128,20 @@ private:
 
 };
 
+// Cool constexpr from https://stackoverflow.com/questions/8487986/file-macro-shows-full-path
+template <typename T, size_t S>
+inline constexpr size_t get_file_name_offset(const T (& str)[S], size_t i = S - 1) {
+    return (str[i] == '/' || str[i] == '\\') ? i + 1 : (i > 0 ? get_file_name_offset(str, i - 1) : 0);
+}
+
+template <typename T>
+inline constexpr size_t get_file_name_offset(T (& str)[1]) {
+    return 0;
+}
+
+#define __FILENAME__ &__FILE__[get_file_name_offset(__FILE__)]
+
 #define LOG(L) LOG2<L>() << __func__ <<"(): "
-#define DO_LOG(L) LOG2<L>() << __func__ <<"(): " << __FILE__ << ":" << __LINE__ << " "
+#define DO_LOG(L) LOG2<L>() << __func__ <<"(): " << __FILENAME__ << ":" << __LINE__ << " "
 
 #endif //COMMON_KVCG_LOG2_HH
