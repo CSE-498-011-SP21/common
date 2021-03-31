@@ -46,11 +46,13 @@ int main() {
     w.value = d;
     w.key = 11;
 
-    auto sw = serialize(w);
+    char* sw = new char[4096];
+
+    size_t sizeWritten = serialize2(sw, 4096, w);
 
     size_t bytesConsumed = 0;
 
-    auto w2 = deserialize2<RequestWrapper<unsigned long long, data_t *>>(sw.data(), sw.size(), bytesConsumed);
+    auto w2 = deserialize2<RequestWrapper<unsigned long long, data_t *>>(sw, 4096, bytesConsumed);
 
     if (w.requestInteger != w2.requestInteger) {
         std::cerr << w.requestInteger << " != " << w2.requestInteger << std::endl;
@@ -63,8 +65,10 @@ int main() {
     if (w.key != w2.key)
         return 7;
 
-    if (bytesConsumed != sw.size())
+    if (bytesConsumed != sizeWritten)
         return 8;
+
+    delete[] sw;
 
     return 0;
 }

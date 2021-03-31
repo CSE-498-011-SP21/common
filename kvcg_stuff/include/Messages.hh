@@ -36,6 +36,15 @@ inline std::vector<char> serialize<Response>(Response r) {
 }
 
 template<>
+inline size_t serialize2<Response>(char *bytes, size_t size, Response r) {
+    assert(size > sizeof(int) + sizeof(bool));
+    memcpy(bytes, (const char *) &r.requestID, sizeof(int));
+    memcpy((bytes + sizeof(int)), (const char *) &r.retry, sizeof(bool));
+    return sizeof(int) + sizeof(bool) +
+           serialize2(bytes + sizeof(int) + sizeof(bool), size - (sizeof(int) + sizeof(bool)), r.result);
+}
+
+template<>
 inline Response deserialize<Response>(const std::vector<char> &bytes) {
     Response r;
     r.requestID = *(int *) bytes.data();
@@ -61,7 +70,7 @@ inline Response deserialize2<Response>(const std::vector<char> &bytes, size_t &b
 }
 
 template<>
-inline Response deserialize2<Response>(const char* bytes, size_t size, size_t &bytesConsumed) {
+inline Response deserialize2<Response>(const char *bytes, size_t size, size_t &bytesConsumed) {
     bytesConsumed = 0;
     Response r;
     r.requestID = *(int *) bytes;
