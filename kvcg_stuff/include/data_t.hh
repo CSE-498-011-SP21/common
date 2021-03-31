@@ -79,5 +79,21 @@ inline data_t *deserialize2<data_t *>(const std::vector<char> &bytes, size_t &by
     }
 }
 
+template<>
+inline data_t *deserialize2<data_t *>(const char* bytes, size_t size, size_t &bytesConsumed) {
+    bytesConsumed = 0;
+    size_t numBytes = *(size_t *) bytes;
+    bytesConsumed += sizeof(size_t);
+    assert(size >= numBytes + sizeof(size_t));
+    if (numBytes == 0) {
+        return nullptr;
+    } else {
+        data_t *data = new data_t(numBytes);
+        memcpy(data->data, (bytes + sizeof(size_t)), numBytes);
+        bytesConsumed += numBytes;
+        return data;
+    }
+}
+
 
 #endif //KVCG_DATA_T_HH

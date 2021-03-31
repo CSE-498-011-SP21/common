@@ -23,5 +23,10 @@ inline T deserialize2(const std::vector<char>& v, size_t& bytesConsumed){
     exit(1);
 }
 
+template<typename T>
+inline T deserialize2(const char* bytes, size_t size, size_t& bytesConsumed){
+    exit(1);
+}
+
 
 #endif //COMMON_SERDES_HH

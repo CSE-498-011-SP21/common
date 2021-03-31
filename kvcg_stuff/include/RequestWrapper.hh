@@ -57,5 +57,21 @@ deserialize2<RequestWrapper<unsigned long long, data_t *>>(const std::vector<cha
     return r;
 }
 
+template<>
+inline RequestWrapper<unsigned long long, data_t *>
+deserialize2<RequestWrapper<unsigned long long, data_t *>>(const char* bytes, size_t size, size_t &bytesConsumed) {
+    bytesConsumed = 0;
+    RequestWrapper<unsigned long long, data_t *> r;
+    r.key = *(unsigned long long *) bytes;
+    bytesConsumed += sizeof(unsigned long long);
+    size_t data_tBytesConsumed = 0;
+    r.value = deserialize2<data_t *>(bytes + bytesConsumed, size - bytesConsumed, data_tBytesConsumed);
+    bytesConsumed += data_tBytesConsumed;
+    r.requestInteger = *(unsigned *) (bytes + bytesConsumed);
+    bytesConsumed += sizeof(unsigned);
+    return r;
+}
+
+
 
 #endif //COMMON_REQUESTWRAPPER_HH

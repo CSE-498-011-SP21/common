@@ -50,7 +50,7 @@ int main() {
 
     size_t bytesConsumed = 0;
 
-    auto w2 = deserialize2<RequestWrapper<unsigned long long, data_t *>>(sw, bytesConsumed);
+    auto w2 = deserialize2<RequestWrapper<unsigned long long, data_t *>>(sw.data(), sw.size(), bytesConsumed);
 
     if (w.requestInteger != w2.requestInteger) {
         std::cerr << w.requestInteger << " != " << w2.requestInteger << std::endl;

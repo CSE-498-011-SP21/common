@@ -60,5 +60,19 @@ inline Response deserialize2<Response>(const std::vector<char> &bytes, size_t &b
     return r;
 }
 
+template<>
+inline Response deserialize2<Response>(const char* bytes, size_t size, size_t &bytesConsumed) {
+    bytesConsumed = 0;
+    Response r;
+    r.requestID = *(int *) bytes;
+    bytesConsumed += sizeof(int);
+    r.retry = *(bool *) (bytes + bytesConsumed);
+    bytesConsumed += sizeof(int) + sizeof(bool);
+    size_t data_tBytesConsumed = 0;
+    r.result = deserialize2<data_t *>(bytes + bytesConsumed, size - bytesConsumed, data_tBytesConsumed);
+    bytesConsumed += data_tBytesConsumed;
+    return r;
+}
+
 
 #endif //KVCG_MESSAGES_HH
