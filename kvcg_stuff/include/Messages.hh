@@ -9,7 +9,7 @@
 
 struct Response {
 
-    Response(int id, data_t *res, bool ret, bool shouldFree) : requestID(id), result(res), retry(ret),
+    Response(int id, data_t *res, bool ret, bool shouldFree = false) : requestID(id), result(res), retry(ret),
                                                                shouldFree_(shouldFree) {
 
     }
@@ -31,7 +31,7 @@ struct Response {
     int requestID;
     bool retry;
     data_t *result;
-    const bool shouldFree_;
+    bool shouldFree_;
 };
 
 template<>
