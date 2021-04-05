@@ -9,20 +9,29 @@
 
 struct Response {
 
-    Response(int id, data_t *res, bool ret) : requestID(id), result(res), retry(ret) {
+    Response(int id, data_t *res, bool ret, bool shouldFree) : requestID(id), result(res), retry(ret),
+                                                               shouldFree_(shouldFree) {
 
     }
 
-    Response() : requestID(-1) {
+    Response() : requestID(-1), result(nullptr), shouldFree_(false) {
 
     }
 
 
-    ~Response() {}
+    ~Response() {
+        if (shouldFree_) {
+            if (result) {
+                delete[] result->data;
+                delete result;
+            }
+        }
+    }
 
     int requestID;
     bool retry;
     data_t *result;
+    const bool shouldFree_;
 };
 
 template<>
