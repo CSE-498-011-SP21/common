@@ -14,12 +14,22 @@ inline std::vector<char> serialize(T t){
 }
 
 template<typename T>
+inline size_t serialize2(char* bytes, size_t size, T t){
+    exit(1);
+}
+
+template<typename T>
 inline T deserialize(const std::vector<char>& v){
     exit(1);
 }
 
 template<typename T>
 inline T deserialize2(const std::vector<char>& v, size_t& bytesConsumed){
+    exit(1);
+}
+
+template<typename T>
+inline T deserialize2(const char* bytes, size_t size, size_t& bytesConsumed){
     exit(1);
 }
 
