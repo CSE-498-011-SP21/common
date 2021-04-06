@@ -60,6 +60,10 @@ public:
     LOG2() {
         opened = false;
         // TODO: Add timestamp here
+        if (LEVEL == ERROR)
+            operator<<("\x1B[31m");
+        else if (LEVEL == WARNING)
+            operator<<("\x1B[33m");
         operator<<("[" + getLabel(LEVEL) + "]:");
     }
 
@@ -105,6 +109,7 @@ private:
     template<LogLevel L = LEVEL, std::enable_if_t<(L <= COMPILE_LOG_LEVEL)> * = nullptr>
     inline void deconstruct() {
         if (opened) {
+            msg << "\x1B[0m";
             msg << std::endl;
             std::cerr << msg.str();
         }
