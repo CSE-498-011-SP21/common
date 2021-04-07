@@ -45,6 +45,7 @@ int main() {
     w.requestInteger = 10;
     w.value = d;
     w.key = 11;
+    w.endRange = 12;
 
     char* sw = new char[4096];
 
@@ -67,6 +68,9 @@ int main() {
 
     if (bytesConsumed != sizeWritten)
         return 8;
+
+    if(w.endRange != w2.endRange)
+        return 9;
 
     delete[] sw;
 

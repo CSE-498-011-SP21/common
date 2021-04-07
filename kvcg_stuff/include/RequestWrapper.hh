@@ -12,6 +12,7 @@
 template<typename K, typename V>
 struct RequestWrapper {
     K key;
+    K endRange;
     V value;
     unsigned requestInteger;
 };
@@ -19,9 +20,10 @@ struct RequestWrapper {
 template<>
 inline std::vector<char>
 serialize<RequestWrapper<unsigned long long, data_t *>>(RequestWrapper<unsigned long long, data_t *> r) {
-    std::vector<char> bytes(sizeof(unsigned long long));
+    std::vector<char> bytes(sizeof(unsigned long long) * 2);
     std::vector<char> bytes2(sizeof(unsigned));
     memcpy(bytes.data(), (const char *) &r.key, sizeof(unsigned long long));
+    memcpy(bytes.data() + sizeof(unsigned long long), (const char *) &r.endRange, sizeof(unsigned long long));
     std::vector<char> v = serialize(r.value);
     memcpy(bytes2.data(), (const char *) &r.requestInteger, sizeof(unsigned));
     bytes.insert(bytes.end(), v.begin(), v.end());
@@ -36,6 +38,8 @@ serialize2<RequestWrapper<unsigned long long, data_t *>>(char *bytes, size_t siz
     size_t offset = 0;
     memcpy(bytes, (const char *) &r.key, sizeof(unsigned long long));
     offset += sizeof(unsigned long long);
+    memcpy(bytes + offset, (const char *) &r.endRange, sizeof(unsigned long long));
+    offset += sizeof(unsigned long long);
     offset += serialize2(bytes + offset, size - offset, r.value);
     memcpy(bytes + offset, (const char *) &r.requestInteger, sizeof(unsigned));
     offset += sizeof(unsigned);
@@ -49,7 +53,8 @@ deserialize<RequestWrapper<unsigned long long, data_t *>>(const std::vector<char
 
     RequestWrapper<unsigned long long, data_t *> r;
     r.key = *(unsigned long long *) bytes.data();
-    std::vector<char> bytes2(bytes.begin() + sizeof(unsigned long long), bytes.end());
+    r.endRange = *(unsigned long long *) (bytes.data() + sizeof(unsigned long long));
+    std::vector<char> bytes2(bytes.begin() + sizeof(unsigned long long) * 2, bytes.end());
     r.value = deserialize<data_t *>(bytes2);
     r.requestInteger = *(unsigned *) (bytes.data() + bytes.size() - sizeof(unsigned));
     return r;
@@ -61,6 +66,8 @@ deserialize2<RequestWrapper<unsigned long long, data_t *>>(const std::vector<cha
     bytesConsumed = 0;
     RequestWrapper<unsigned long long, data_t *> r;
     r.key = *(unsigned long long *) bytes.data();
+    bytesConsumed += sizeof(unsigned long long);
+    r.endRange = *(unsigned long long *) (bytes.data() + bytesConsumed);
     bytesConsumed += sizeof(unsigned long long);
     std::vector<char> bytes2(bytes.begin() + bytesConsumed, bytes.end());
     size_t data_tBytesConsumed = 0;
@@ -77,6 +84,8 @@ deserialize2<RequestWrapper<unsigned long long, data_t *>>(const char *bytes, si
     bytesConsumed = 0;
     RequestWrapper<unsigned long long, data_t *> r;
     r.key = *(unsigned long long *) bytes;
+    bytesConsumed += sizeof(unsigned long long);
+    r.endRange = *(unsigned long long *) (bytes + bytesConsumed);
     bytesConsumed += sizeof(unsigned long long);
     size_t data_tBytesConsumed = 0;
     r.value = deserialize2<data_t *>(bytes + bytesConsumed, size - bytesConsumed, data_tBytesConsumed);
