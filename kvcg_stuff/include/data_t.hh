@@ -4,7 +4,7 @@
 
 #include <vector>
 #include <cstring>
-#include <cassert>
+#include <stdexcept>
 #include <SerDes.hh>
 
 #ifndef KVCG_DATA_T_HH
@@ -53,7 +53,9 @@ inline std::vector<char> serialize<data_t *>(data_t *data) {
 template<>
 inline size_t serialize2<data_t *>(char *bytes, size_t size, data_t *data) {
     size_t numBytes = (data == nullptr ? sizeof(size_t) : sizeof(size_t) + data->size);
-    assert(size >= numBytes);
+    if (size < numBytes) {
+      throw std::overflow_error("not enough allocated memory to serialize");
+    }
     if (data) {
         memcpy(bytes, (const char *) &data->size, sizeof(size_t));
         memcpy((bytes + sizeof(size_t)), data->data, data->size);
@@ -68,7 +70,9 @@ inline size_t serialize2<data_t *>(char *bytes, size_t size, data_t *data) {
 template<>
 inline data_t *deserialize<data_t *>(const std::vector<char> &bytes) {
     size_t numBytes = *(size_t *) bytes.data();
-    assert(bytes.size() >= numBytes + sizeof(size_t));
+    if(bytes.size() < numBytes + sizeof(size_t)) {
+        throw std::overflow_error("not enough allocated memory to deserialize");
+    }
     if (numBytes == 0) {
         return nullptr;
     } else {
@@ -83,7 +87,9 @@ inline data_t *deserialize2<data_t *>(const std::vector<char> &bytes, size_t &by
     bytesConsumed = 0;
     size_t numBytes = *(size_t *) bytes.data();
     bytesConsumed += sizeof(size_t);
-    assert(bytes.size() >= numBytes + sizeof(size_t));
+    if (bytes.size() < numBytes + sizeof(size_t)) {
+        throw std::overflow_error("not enough allocated memory to deserialize");
+    }
     if (numBytes == 0) {
         return nullptr;
     } else {
@@ -99,7 +105,9 @@ inline data_t *deserialize2<data_t *>(const char *bytes, size_t size, size_t &by
     bytesConsumed = 0;
     size_t numBytes = *(size_t *) bytes;
     bytesConsumed += sizeof(size_t);
-    assert(size >= numBytes + sizeof(size_t));
+    if (size < numBytes + sizeof(size_t)) {
+        throw std::overflow_error("not enough allocated memory to deserialize");
+    }
     if (numBytes == 0) {
         return nullptr;
     } else {
